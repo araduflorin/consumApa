@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+      <script src="/static/script.js"></script>           
+          
+          <br>
+    
+    <div class="container">          
+          <div class="row justify-content-around ">
+            <div class="col-fluid">
+                <form action="" method="POST">
+                  <br> 
+                  <input type="text" name="indexBuc" id="indexBuc">
+                  <br>
+                  <input type="text" name="indexBaie" id="indexBaie">
+                  <br> 
+                  <input type="text" name="indexWC" id="indexWC">
+                  <br> 
+                  <input type="submit" value="Adauga">
+                </form>
+            </div>
+            <div class="col-fluid">
+                <table id="table" class="table table-hover table-dark table-bordered table-striped table-sm" style="width:100% " >
+                    <thead>
+                        <tr>
+                        <!-- Your Columns HERE -->
+                            <th scope="col">Index bucatarie</th>
+                            <th scope="col">Index baie</th>
+                            <th scope="col">Index WC serviciu</th>
+                            <th scope="col">Data</th>                    
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Your rows inside the table HERE: -->
+                        {% for c in inreg %}
+                            <tr onclick = "myFunction(this)">
+                                <td>{{ c.indexBuc }}</td>
+                                <td>{{ c.indexBaie }}</td>
+                                <td>{{ c.indexWCServiciu }}</td>
+                                <td>{{ c.dataConsum }}</td>
+                            </tr>
+                        {% endfor %}
+                    
+                    </tbody>             
+                </table>       
+            </div>
+          </div>          
+        </div>
+{% endblock %}
