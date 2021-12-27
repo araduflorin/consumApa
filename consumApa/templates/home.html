@@ -12,7 +12,7 @@
     <div class="container">          
           <div class="row justify-content-around ">
             <div class="col-fluid">
-                <form action="" method="POST">
+                <form action="/adauga" method="POST">
                   <br> 
                   <input type="text" name="indexBuc" id="indexBuc">
                   <br>
@@ -40,7 +40,7 @@
                             <tr onclick = "myFunction(this)">
                                 <td>{{ c.indexBuc }}</td>
                                 <td>{{ c.indexBaie }}</td>
-                                <td>{{ c.indexWCServiciu }}</td>
+                                <td>{{ c.indexWC }}</td>
                                 <td>{{ c.dataConsum }}</td>
                             </tr>
                         {% endfor %}
