@@ -44,23 +44,46 @@ def get_db():
 def home():
     db = get_db()
     cursor = db.execute('SELECT * FROM ApaRece')
-    result = cursor.fetchall()
+    result = cursor.fetchall()    
     return render_template("home.html", inreg=result)
 
 @app.route("/adauga", methods=["POST"])
 def adauga():
-    indexBuc = request.form.get("indexBuc")
-    indexBaie = request.form.get("indexBaie")
-    indexWC = request.form.get("indexWC")
-    #data = datetime.utcnow
-    data = datetime.now()
-    format_data = data.strftime('%d.%m.%Y %H:%M')
+    if request.method == "POST":
+        indexBuc = request.form['indexBuc']
+        indexBaie = request.form["indexBaie"]
+        indexWC = request.form["indexWC"]
+        #data = datetime.utcnow
+        data = datetime.now()
+        format_data = data.strftime('%d.%m.%Y %H:%M')
 
-    db=get_db()
-    cursor = db.execute("INSERT INTO ApaRece (indexBuc, indexBaie, indexWC, dataConsum) VALUES(?, ?, ?, ?)", (indexBuc, indexBaie, indexWC, format_data))
-    
-    db.commit()
-    return redirect("/")
+        db=get_db()
+        cursor = db.execute("INSERT INTO ApaRece (indexBuc, indexBaie, indexWC, dataConsum) VALUES(?, ?, ?, ?)", (indexBuc, indexBaie, indexWC, format_data))
+        
+        db.commit()
+        return redirect('/')
+
+@app.route("/modifica", methods=['GET','POST'])
+def modifica():
+    if request.method == "POST":
+        db = get_db()
+        cursor = db.execute('SELECT * FROM ApaRece')
+        result = cursor.fetchall()
+        id_data = request.form.get("id")
+        print("ID-ul: ", id_data)
+        indexBuc = request.form["indexBuc"]
+        indexBaie = request.form["indexBaie"]
+        indexWC = request.form["indexWC"]
+        #data = datetime.utcnow
+        data = datetime.now()
+        format_data = data.strftime('%d.%m.%Y %H:%M')
+
+        db=get_db()
+        
+        cursor = db.execute("""UPDATE ApaRece SET indexBuc=?, indexBaie=?, indexWC=?, dataConsum=? WHERE id=?;""", (indexBuc, indexBaie, indexWC, format_data, id_data))
+        
+        db.commit()
+        return redirect("/")
 
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5002)

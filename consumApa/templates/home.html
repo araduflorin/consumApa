@@ -1,53 +1,168 @@
 {% extends 'base.html' %}
+{% include 'header.html' %}
 
 {% block title %}
 
 {% endblock %}
 
-{% block content %}
+{% block body %}
       <script src="/static/script.js"></script>           
           
           <br>
     
     <div class="container">          
-          <div class="row justify-content-around ">
-            <div class="col-fluid">
-                <form action="/adauga" method="POST">
-                  <br> 
-                  <input type="text" name="indexBuc" id="indexBuc">
-                  <br>
-                  <input type="text" name="indexBaie" id="indexBaie">
-                  <br> 
-                  <input type="text" name="indexWC" id="indexWC">
-                  <br> 
-                  <input type="submit" value="Adauga">
-                </form>
-            </div>
-            <div class="col-fluid">
-                <table id="table" class="table table-hover table-dark table-bordered table-striped table-sm" style="width:100% " >
-                    <thead>
-                        <tr>
-                        <!-- Your Columns HERE -->
-                            <th scope="col">Index bucatarie</th>
-                            <th scope="col">Index baie</th>
-                            <th scope="col">Index WC serviciu</th>
-                            <th scope="col">Data</th>                    
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Your rows inside the table HERE: -->
-                        {% for c in inreg %}
-                            <tr onclick = "myFunction(this)">
-                                <td>{{ c.indexBuc }}</td>
-                                <td>{{ c.indexBaie }}</td>
-                                <td>{{ c.indexWC }}</td>
-                                <td>{{ c.dataConsum }}</td>
+        <div class="jumbotron p-3">
+            <h2>Introducere <b>Consumuri </b>  <button type="button"  class="btn btn-success float-right"
+                data-toggle="modal" data-target="#mymodal">Adauga consum</button> </h2>
+             
+            <!--<div class="row justify-content-around "> -->
+                <!--
+                <div class="col-fluid">
+                    <form action="/adauga" method="POST">
+                    <br>
+                    <input type="text" name="id" id="id">
+                    <br> 
+                    <input type="text" name="indexBuc" id="indexBuc">
+                    <br>
+                    <input type="text" name="indexBaie" id="indexBaie">
+                    <br> 
+                    <input type="text" name="indexWC" id="indexWC">
+                    <br><br>
+                    <input type="submit" value="Adauga">
+                    <input type="submit" value="Modifica">
+                    </form>
+                </div>
+                --> 
+
+                <div class="col-fluid">
+                    <table id="table" class="table table-hover table-dark table-bordered table-striped table-sm" style="width:100% " >
+                        <thead>
+                            <tr>
+                            <!-- Your Columns HERE -->
+                               <!-- <th scope="col">ID</th>-->
+                                <th scope="col">Index bucatarie</th>
+                                <th scope="col">Index baie</th>
+                                <th scope="col">Index WC serviciu</th>
+                                <th scope="col">Data</th>   
+                                <th scope="col">Actiune</th>       
+
                             </tr>
-                        {% endfor %}
-                    
-                    </tbody>             
-                </table>       
-            </div>
-          </div>          
-        </div>
+                        </thead>
+                        <tbody>
+                        <!-- Your rows inside the table HERE: -->
+                            {% for c in inreg %}
+                                <tr onclick = "myFunction(this)">   
+                                    <td style="display:none;">{{ c.id }}</td>                             
+                                    <td>{{ c.indexBuc }}</td>
+                                    <td>{{ c.indexBaie }}</td>
+                                    <td>{{ c.indexWC }}</td>
+                                    <td>{{ c.dataConsum }}</td>
+                                    <td>
+                                        <a href="/modifica/{{c.id}}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modaledit{{c.id}}">Modifica</a>
+                                        <a href="" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur ca vrei sa stergi ?')">Sterge</a>                 
+                                    </td>
+                                </tr>
+
+                                <!-- Modal modificare consum -->
+
+                                <div id="modaledit{{c.id}}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                       <div class="modal-content">
+                                          <div class="modal-header">
+                                  
+                                             <h4 class="modal-title">Modifica consum</h4>
+                                          </div>
+                                          <div class="modal-body">
+                                  
+                                                <form action="{{url_for('modifica')}}" method="POST">                                  
+                                    
+                                                    <div class="form-group">                                  
+                                                    <label>Index bucatarie:</label>
+                                                    <input type="hidden" name="id" value="{{c.id}}">
+                                                    <input type="number" class="form-control" name="indexBuc" value="{{c.indexBuc}}">                                                   
+                                                    </div>
+                                    
+                                                    <div class="form-group">                                                                                    
+                                                    <label>Index baie:</label>
+                                                    <input type="number" class="form-control" name="indexBaie" value="{{c.indexBaie}}">                                               
+                                                    </div>
+                                                                        
+                                                    <div class="form-group">                             
+                                                    <label>Index wc serviciu</label>
+                                                    <input type="number" class="form-control" name="indexWC" value="{{c.indexWC}}">                              
+                                                    </div>
+                                                                                                        
+                                                    <div class="form-group">                                 
+                                                        <button class="btn btn-primary" type="submit">Modifica</button>                                 
+                                                    </div>
+                                    
+                                                </form>                                  
+                                  
+                                          </div>
+                                                                    
+                                          <div class="modal-footer">                                 
+                                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Inchide</button>
+                                          </div>
+                                                                    
+                                       </div>
+                                                                    
+                                    </div>
+                                                                    
+                                 </div>
+
+                            {% endfor %}
+                        
+                        </tbody>             
+                    </table>       
+                </div>
+
+                                <!-- Modal adaugare consum -->
+                  
+                                <div id="mymodal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                       <div class="modal-content">
+                                          <div class="modal-header">
+                                  
+                                             <h4 class="modal-title">Adauga consum nou</h4>
+                                          </div>
+                                          <div class="modal-body">
+                                  
+                                                <form action="{{url_for('adauga')}}" method="POST">                                  
+                                    
+                                                    <div class="form-group">                                  
+                                                    <label>Index baie:</label>
+                                                    <input type="number" class="form-control" name="indexBuc" required="1">                                                   
+                                                    </div>
+                                    
+                                                    <div class="form-group">                                                                                    
+                                                    <label>Index bucatarie:</label>
+                                                    <input type="number" class="form-control" name="indexBaie" required="1">                                               
+                                                    </div>
+                                                                        
+                                                    <div class="form-group">                             
+                                                    <label>Index wc serviciu</label>
+                                                    <input type="number" class="form-control" name="indexWC" required="1">                              
+                                                    </div>
+                                                                                                        
+                                                    <div class="form-group">                                 
+                                                        <button class="btn btn-primary" type="submit">Adauga</button>                                 
+                                                    </div>
+                                    
+                                                </form>                                  
+                                  
+                                          </div>
+                                                                    
+                                          <div class="modal-footer">                                 
+                                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Inchide</button>
+                                          </div>
+                                                                    
+                                       </div>
+                                                                    
+                                    </div>
+                                                                    
+                                 </div>
+
+            <!--</div> -->     
+        </div>         
+    </div>
 {% endblock %}
