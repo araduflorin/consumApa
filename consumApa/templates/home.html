@@ -12,8 +12,12 @@
     
     <div class="container">          
         <div class="jumbotron p-3">
-            <h2>Introducere <b>Consumuri </b>  <button type="button"  class="btn btn-success float-right"
-                data-toggle="modal" data-target="#mymodal">Adauga consum</button> </h2>
+            <h2>Introducere <b>Consumuri </b> 
+                 <button type="button"  class="btn btn-success float-right" style="padding: 5px 19px;" data-toggle="modal" data-target="#modalAdaugRece">Adauga consum apa rece</button>
+                 <br>
+                 <button type="button"  class="btn btn-success float-right" style="margin-top: 0.7em; margin-bottom: 0.5em; padding: 5px 15px;" data-toggle="modal" data-target="#modalAdaugCalda">Adauga consum apa calda</button>
+                 <br>
+             </h2>
              
             <!--<div class="row justify-content-around "> -->
                 <!--
@@ -39,30 +43,49 @@
                         <thead>
                             <tr>
                             <!-- Your Columns HERE -->
-                               <!-- <th scope="col">ID</th>-->
+                                <th scope="col">ID</th>
                                 <th scope="col">Index bucatarie</th>
                                 <th scope="col">Index baie</th>
                                 <th scope="col">Index WC serviciu</th>
                                 <th scope="col">Data</th>   
-                                <th scope="col">Actiune</th>       
+                                <th scope="col">Consum</th>
+                                <th scope="col">Actiune</th>     
+                                 
 
                             </tr>
                         </thead>
                         <tbody>
                         <!-- Your rows inside the table HERE: -->
-                            {% for c in inreg %}
-                                <tr onclick = "myFunction(this)">   
-                                    <td style="display:none;">{{ c.id }}</td>                             
-                                    <td>{{ c.indexBuc }}</td>
-                                    <td>{{ c.indexBaie }}</td>
-                                    <td>{{ c.indexWC }}</td>
-                                    <td>{{ c.dataConsum }}</td>
-                                    <td>
-                                        <a href="/modifica/{{c.id}}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modaledit{{c.id}}">Modifica</a>
-                                        <a href="" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur ca vrei sa stergi ?')">Sterge</a>                 
-                                    </td>
-                                </tr>
-
+                            {% for c in consumA %}
+                                {% if c.tipApa == 'calda' %}
+                                    <tr style = "color: #fc5a47">   
+                                        <td>{{ c.id }}</td>                             
+                                        <td>{{ c.indexBuc }}</td>
+                                        <td>{{ c.indexBaie }}</td>
+                                        <td>{{ c.indexWC }}</td>
+                                        <td>{{ c.dataConsum }}</td> 
+                                        <td>{{ c.consum }}</td>
+                                        <td>
+                                            <a href="/modifica/{{c.id}}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modaledit{{c.id}}">Modifica</a>
+                                            <a href="" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur ca vrei sa stergi ?')">Sterge</a>                 
+                                        </td>                                        
+                                    </tr>
+                                
+                                {% else %}
+                                    <tr style = "color: #889bfc">
+                                        <td>{{ c.id }}</td>                             
+                                        <td>{{ c.indexBuc }}</td>
+                                        <td>{{ c.indexBaie }}</td>
+                                        <td>{{ c.indexWC }}</td>
+                                        <td>{{ c.dataConsum }}</td>   
+                                        <td>{{ c.consum }}</td>                    
+                                        <td>
+                                            <a href="/modifica/{{c.id}}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modaledit{{c.id}}">Modifica</a>
+                                            <a href="" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur ca vrei sa stergi ?')">Sterge</a>                 
+                                        </td> 
+                                                
+                                {% endif %}     
+                            
                                 <!-- Modal modificare consum -->
 
                                 <div id="modaledit{{c.id}}" class="modal fade" role="dialog">
@@ -110,7 +133,7 @@
                                                                     
                                  </div>
 
-                            {% endfor %}
+                             {% endfor %}
                         
                         </tbody>             
                     </table>       
@@ -118,16 +141,60 @@
 
                                 <!-- Modal adaugare consum -->
                   
-                                <div id="mymodal" class="modal fade" role="dialog">
+                                <div id="modalAdaugRece" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
                                        <div class="modal-content">
                                           <div class="modal-header">
                                   
-                                             <h4 class="modal-title">Adauga consum nou</h4>
+                                             <h4 class="modal-title">Adauga consum apa rece</h4>
                                           </div>
                                           <div class="modal-body">
                                   
-                                                <form action="{{url_for('adauga')}}" method="POST">                                  
+                                                <form action="{{url_for('adaugaRece')}}" method="POST">                                  
+                                    
+                                                    <div class="form-group">                                  
+                                                    <label>Index baie:</label>
+                                                    <input type="number" class="form-control" name="indexBuc" required="1">                                                   
+                                                    </div>
+                                    
+                                                    <div class="form-group">                                                                                    
+                                                    <label>Index bucatarie:</label>
+                                                    <input type="number" class="form-control" name="indexBaie" required="1">                                               
+                                                    </div>
+                                                                        
+                                                    <div class="form-group">                             
+                                                    <label>Index wc serviciu</label>
+                                                    <input type="number" class="form-control" name="indexWC" required="1">                              
+                                                    </div>
+                                                                                                        
+                                                    <div class="form-group">                                 
+                                                        <button class="btn btn-primary" type="submit">Adauga</button>                                 
+                                                    </div>
+                                    
+                                                </form>                                  
+                                  
+                                          </div>
+                                                                    
+                                          <div class="modal-footer">                                 
+                                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Inchide</button>
+                                          </div>
+                                                                    
+                                       </div>
+                                                                    
+                                    </div>
+                                                                    
+                                 </div>
+
+                                 <div id="modalAdaugCalda" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                       <div class="modal-content">
+                                          <div class="modal-header">
+                                  
+                                             <h4 class="modal-title">Adauga consum apa calda</h4>
+                                          </div>
+                                          <div class="modal-body">
+                                  
+                                                <form action="{{url_for('adaugaCalda')}}" method="POST">                                  
                                     
                                                     <div class="form-group">                                  
                                                     <label>Index baie:</label>

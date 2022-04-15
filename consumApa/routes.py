@@ -43,12 +43,17 @@ def get_db():
 @app.route("/")
 def home():
     db = get_db()
-    cursor = db.execute('SELECT * FROM ApaRece')
+    cursor = db.execute("SELECT * FROM ApaRece UNION SELECT * FROM ApaCalda")
+    cursorConsum = db.execute("SELECT id, indexBuc, indexBaie, indexWC, dataConsum, tipApa, indexBuc-lag(indexBuc,1) OVER (ORDER BY id) AS consumBuc, indexBaie-lag(indexBaie,1) OVER (ORDER BY id) AS consumBaie, indexWC-lag(indexWC,1) OVER (ORDER BY id) AS consumWC FROM ApaRece "+
+     "UNION SELECT '','','','','','','','', ('consumBuc' + 'consumBaie' + 'consumWC') AS consum FROM ApaRece "+
+     "UNION SELECT id, indexBuc, indexBaie, indexWC, dataConsum, tipApa, indexBuc-lag(indexBuc,1) OVER (ORDER BY id) AS consumBuc, indexBaie-lag(indexBaie,1) OVER (ORDER BY id) AS consumBaie, indexWC-lag(indexWC,1) OVER (ORDER BY id) AS consumWC FROM ApaCalda "+
+     "UNION SELECT '','','','','','','','', ('consumBuc' + 'consumBaie' + 'consumWC') AS consum FROM ApaCalda")
     result = cursor.fetchall()    
-    return render_template("home.html", inreg=result)
+    resultConsum = cursorConsum.fetchall()
+    return render_template("home.html", inreg=result, consumA=resultConsum)
 
-@app.route("/adauga", methods=["POST"])
-def adauga():
+@app.route("/adaugaRece", methods=['GET','POST'])
+def adaugaRece():
     if request.method == "POST":
         indexBuc = request.form['indexBuc']
         indexBaie = request.form["indexBaie"]
@@ -56,9 +61,25 @@ def adauga():
         #data = datetime.utcnow
         data = datetime.now()
         format_data = data.strftime('%d.%m.%Y %H:%M')
-
+        tipApa = "rece"
         db=get_db()
-        cursor = db.execute("INSERT INTO ApaRece (indexBuc, indexBaie, indexWC, dataConsum) VALUES(?, ?, ?, ?)", (indexBuc, indexBaie, indexWC, format_data))
+        cursor = db.execute("INSERT INTO ApaRece (indexBuc, indexBaie, indexWC, dataConsum, tipApa) VALUES(?, ?, ?, ?, ?)", (indexBuc, indexBaie, indexWC, format_data, tipApa))
+        
+        db.commit()
+        return redirect('/')
+
+@app.route("/adaugaCalda", methods=['GET','POST'])
+def adaugaCalda():
+    if request.method == "POST":
+        indexBuc = request.form['indexBuc']
+        indexBaie = request.form["indexBaie"]
+        indexWC = request.form["indexWC"]
+        #data = datetime.utcnow
+        data = datetime.now()
+        format_data = data.strftime('%d.%m.%Y %H:%M')
+        tipApa = "calda"
+        db=get_db()
+        cursor = db.execute("INSERT INTO ApaCalda (indexBuc, indexBaie, indexWC, dataConsum, tipApa) VALUES(?, ?, ?, ?, ?)", (indexBuc, indexBaie, indexWC, format_data, tipApa))
         
         db.commit()
         return redirect('/')
