@@ -44,10 +44,9 @@ def get_db():
 def home():
     db = get_db()
     cursor = db.execute("SELECT * FROM ApaRece UNION SELECT * FROM ApaCalda")
-    cursorConsum = db.execute("SELECT id, indexBuc, indexBaie, indexWC, dataConsum, tipApa, indexBuc-lag(indexBuc,1) OVER (ORDER BY id) AS consumBuc, indexBaie-lag(indexBaie,1) OVER (ORDER BY id) AS consumBaie, indexWC-lag(indexWC,1) OVER (ORDER BY id) AS consumWC FROM ApaRece "+
-     "UNION SELECT '','','','','','','','', ('consumBuc' + 'consumBaie' + 'consumWC') AS consum FROM ApaRece "+
-     "UNION SELECT id, indexBuc, indexBaie, indexWC, dataConsum, tipApa, indexBuc-lag(indexBuc,1) OVER (ORDER BY id) AS consumBuc, indexBaie-lag(indexBaie,1) OVER (ORDER BY id) AS consumBaie, indexWC-lag(indexWC,1) OVER (ORDER BY id) AS consumWC FROM ApaCalda "+
-     "UNION SELECT '','','','','','','','', ('consumBuc' + 'consumBaie' + 'consumWC') AS consum FROM ApaCalda")
+    cursorConsum = db.execute("SELECT id, indexBuc, indexBaie, indexWC, dataConsum, tipApa, indexBuc-lag(indexBuc,1) OVER (ORDER BY id) + indexBaie-lag(indexBaie,1) OVER (ORDER BY id) + indexWC-lag(indexWC,1) OVER (ORDER BY id) AS consum FROM ApaRece "+
+     "UNION SELECT id, indexBuc, indexBaie, indexWC, dataConsum, tipApa, indexBuc-lag(indexBuc,1) OVER (ORDER BY id) + indexBaie-lag(indexBaie,1) OVER (ORDER BY id) + indexWC-lag(indexWC,1) OVER (ORDER BY id) AS consum FROM ApaCalda ")
+     
     result = cursor.fetchall()    
     resultConsum = cursorConsum.fetchall()
     return render_template("home.html", inreg=result, consumA=resultConsum)
