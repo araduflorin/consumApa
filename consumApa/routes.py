@@ -83,8 +83,8 @@ def adaugaCalda():
         db.commit()
         return redirect('/')
 
-@app.route("/modifica", methods=['GET','POST'])
-def modifica():
+@app.route("/modificaRece", methods=['GET','POST'])
+def modificaRece():
     if request.method == "POST":
         db = get_db()
         cursor = db.execute('SELECT * FROM ApaRece')
@@ -101,6 +101,28 @@ def modifica():
         db=get_db()
         
         cursor = db.execute("""UPDATE ApaRece SET indexBuc=?, indexBaie=?, indexWC=?, dataConsum=? WHERE id=?;""", (indexBuc, indexBaie, indexWC, format_data, id_data))
+        
+        db.commit()
+        return redirect("/")
+
+@app.route("/modificaCalda", methods=['GET','POST'])
+def modificaCalda():
+    if request.method == "POST":
+        db = get_db()
+        cursor = db.execute('SELECT * FROM ApaCalda')
+        result = cursor.fetchall()
+        id_data = request.form.get("id")
+        print("ID-ul: ", id_data)
+        indexBuc = request.form["indexBuc"]
+        indexBaie = request.form["indexBaie"]
+        indexWC = request.form["indexWC"]
+        #data = datetime.utcnow
+        data = datetime.now()
+        format_data = data.strftime('%d.%m.%Y %H:%M')
+
+        db=get_db()
+        
+        cursor = db.execute("""UPDATE ApaCalda SET indexBuc=?, indexBaie=?, indexWC=?, dataConsum=? WHERE id=?;""", (indexBuc, indexBaie, indexWC, format_data, id_data))
         
         db.commit()
         return redirect("/")
