@@ -29,7 +29,8 @@ def home():
 """
 
 def connect_db():
-    sql = sqlite3.connect('consumApa/consumApa.db')
+    #sql = sqlite3.connect('consumApa/consumApa.db')
+    sql = sqlite3.connect('postgres://wduimatuuahmwd:897800e58cb3e509742e92b6d8335765c74a4f684f495e68cfd37d786fb4c4c3@ec2-3-223-213-207.compute-1.amazonaws.com:5432/dd9g3omh3iiil7')
     sql.row_factory = sqlite3.Row
     return sql
 
